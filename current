@@ -1,0 +1,165 @@
+#include <iostream>
+#include <random>
+#include <string>
+#include <iterator>
+#include <algorithm>
+
+int main() {
+
+  int turn = 0;
+  int usermove;
+  int userhealth = 20;
+  int comphealth = 20;
+  int userpotions = 3;
+  int comppotions = 3;
+
+  std::string userpoke;
+  std::string comppoke;
+  std::string diff;
+  std::vector<std::string> Pokemon = {"Bulbasaur", "Squirtle", "Charmander"};
+
+std::cout << "Welcome to the Pokemon Battle Arena!\n";
+std::cout << "Choose your difficulty level: Easy, Medium, or Hard.\n";
+std::cin >> diff;
+if(diff == "Easy"){
+  std::cout << "You have chosen Easy! You and the computer will both start with 20 health points, and 3 potions.\n";
+}
+else if(diff == "Medium"){
+  userhealth = 15;
+  userpotions = 2;
+  std::cout << "You have chosen Medium! You will start with 15 health points, and 2 potions. The computer starts with 20 health points, and 3 potions.\n";  
+}
+else if(diff == "Hard"){
+  userhealth = 10;
+  userpotions = 1;
+  std::cout << "You have chosen Hard! You will start with 10 health points, and 1 potion. The computer starts with 20 health points, and 3 potions.\n";  
+}
+else{
+    std::cout << "That's not an option. Restart to try again.\n";
+}
+
+//User selects their Pokemon
+  std::cout << "Please pick a Pokemon: Bulbasaur, Squirtle, or Charmander.\n";
+  std::cin >> userpoke;
+
+//User's pokemon is validated, and removed from the vector 
+  if(userpoke == "Bulbasaur"){
+    std::cout << "You picked Bulbasaur!\n";
+    Pokemon.erase(Pokemon.begin());    
+  }
+  else if (userpoke == "Squirtle"){
+    std::cout << "You picked Squirtle!\n";
+    Pokemon.erase(Pokemon.begin() + 1);
+  }
+  else if (userpoke == "Charmander"){
+    std::cout << "You picked Charmander!\n";
+    Pokemon.erase(Pokemon.begin() + 2);    
+  }
+  else if (userpoke == "Pikachu"){
+    std::cout << "You picked Pikachu!\n";
+  }
+  //Allowing user to try again if they've entered something invalid, until they've chosen something valid
+  else {
+    while(userpoke != "Bulbasaur" && userpoke != "Squirtle" && userpoke != "Charmander" && userpoke != "Pikachu"){
+      std::cout << "That's not an option.\n";
+      std::cout << "Please pick a Pokemon: Bulbasaur, Squirtle, or Charmander.\n";
+      std::cin >> userpoke;
+    }
+    std::cout << "You picked " << userpoke << "!\n";
+  }
+
+
+//Of the remaining Pokemon, the computer makes a random selection.
+srand (time(NULL)); 
+int v = rand() % Pokemon.size();
+comppoke = Pokemon[v];
+std::cout << "The computer picked " << comppoke << "!\n";
+
+//while neither player has died yet
+while (userhealth > 0 && comphealth > 0){
+  turn++;
+  //Player's turn
+    if(turn % 2 == 1){
+      //If Player still has potions left,
+      if(userpotions > 0){
+              std::cout << "Player, would you like to attack (0), or would you like to take a potion (1)?\n";
+              std::cin >> usermove;
+              //Player selects attack
+              if (usermove == 0) {
+                int j = rand() % 10 + 1;
+                srand (time(NULL));
+                comphealth -= j;
+                std::cout << userpoke << " attacked! " << comppoke << "'s health is now at " << comphealth << ".\n";
+              }
+              //Player selects potion
+              else if (usermove == 1) {
+                int j = rand() % 5 + 1;
+                srand (time(NULL));  
+                userhealth += j;
+                userpotions--;
+                std::cout << userpoke << " took a potion! " << userpoke << "'s health is now at " << userhealth << ". You have " << userpotions << " potions left.\n";
+              }
+              else{
+                std::cout << "That is not a valid answer; you have skipped your turn.\n";
+              }
+      }
+      //Player doesn't have any potions left, can only attack        
+      else{
+      std::cout << "Player, you have no potions left. Press 0 to attack!\n";
+      std::cin >> usermove;
+      //Player selects attack
+      if (usermove == 0) {
+        int j = rand() % 10 + 1;
+        srand (time(NULL));
+        comphealth -= j;
+        std::cout << userpoke << " attacked! " << comppoke << "'s health is now at " << comphealth << ".\n";
+      }
+      else{
+          while(usermove!= 1 && usermove != 0){
+          std::cout << "That is not a valid answer; please select again.\n";
+          std::cout << "Player, would you like to attack (0), or would you like to take a potion (1)?\n";
+          std::cin >> usermove;  
+          }
+      }
+    }
+    }
+    //Computer's turn
+    if (turn % 2 == 0){
+      //if the computer has potions left
+      if(comppotions > 0){
+      int k = rand() % 2;
+      if (k % 2 == 0){
+        int j = rand() % 10 + 1;
+        srand (time(NULL));    
+        userhealth -= j;
+        std::cout << comppoke << " attacked! " << userpoke << "'s health is now at " << userhealth << ".\n";        
+      }
+      else{
+        int j = rand() % 5 + 1;
+        srand (time(NULL));     
+        comphealth += j;
+        comppotions--;
+        std::cout << comppoke << " took a potion! " << comppoke << "'s health is now at " << comphealth << ". The computer has " << comppotions << " potions left.\n";        
+      }
+      }
+      else{
+        int j = rand() % 10 + 1;
+        srand (time(NULL));    
+        userhealth -= j;
+        std::cout << comppoke << " attacked! " << userpoke << "'s health is now at " << userhealth << ".\n";  
+
+      }
+    }
+  }
+
+if(userhealth > comphealth){
+  std::cout << userpoke << " wins!\n";
+}
+else if (comphealth > userhealth){
+  std::cout << comppoke << " wins!\n";
+}
+else{
+  std::cout << "Tied game.\n";
+}
+
+}
